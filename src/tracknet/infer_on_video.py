@@ -156,7 +156,7 @@ def write_track(frames, ball_track, path_output_video, fps, trace=7):
         out.write(frame) 
     out.release()    
 
-if __name__ == '__main__':
+def infer_on_video():
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--batch_size', type=int, default=2, help='batch size')
