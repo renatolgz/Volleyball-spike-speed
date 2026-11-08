@@ -2,15 +2,16 @@ import cv2 as cv
 import numpy as np
 import os
 from moviepy import VideoFileClip
-import Path
+from pathlib import Path
 
 #A ordem não importa, desde que seja mantida
-video_esq_path = Path(r"C:\Users\Renato Gusmão\Desktop\volei\ip17_v2.mov")
-video_dir_path = Path(r"C:\Users\Renato Gusmão\Desktop\volei\ip13_v2.mov")
+video_esq_path = Path(r"data\ip13_v2.mov")
+video_dir_path = Path(r"data\ip17_v2.mov")
 
-pastas = ['calibracao_esq_2', 'calibracao_dir_2', 'sinc_esq_2', 'sinc_dir_2']
+pastas = ['calibracao_esq', 'calibracao_dir', 'sinc_esq', 'sinc_dir']
 for p in pastas:
-    os.makedirs(p, exist_ok=True)
+    caminho = os.path.join("data", p)
+    os.makedirs(caminho, exist_ok=True)
 
 def extrair_janela(cap, start_sec, end_sec, pasta_saida, prefixo):
     tempo_atual = start_sec
@@ -67,10 +68,10 @@ cap_esq = cv.VideoCapture(video_esq_path)
 cap_dir = cv.VideoCapture(video_dir_path)
 
 print("Extraindo imagens de calibração individual - Esquerda")
-extrair_janela(cap_esq, tempos_calib_esq[0], tempos_calib_esq[1], 'calibracao_esq', 'esq')
+extrair_janela(cap_esq, tempos_calib_esq[0], tempos_calib_esq[1], os.path.join('data', 'calibracao_esq'), 'esq')
 
 print("Extraindo imagens de calibração individual - Direita")
-extrair_janela(cap_dir, tempos_calib_dir[0], tempos_calib_dir[1], 'calibracao_dir', 'dir')
+extrair_janela(cap_dir, tempos_calib_dir[0], tempos_calib_dir[1], os.path.join('data', 'calibracao_dir'), 'dir')
 
 print("Extraindo pares sincronizados")
 tempo_atual = tempos_sinc[0]
@@ -89,8 +90,8 @@ while tempo_atual <= tempos_sinc[1]:
     
     if ret_esq and ret_dir:
         nome = f"sinc_{count:04d}.png"
-        cv.imwrite(os.path.join('sinc_esq', nome), frame_esq)
-        cv.imwrite(os.path.join('sinc_dir', nome), frame_dir)
+        cv.imwrite(os.path.join('data', 'sinc_esq', nome), frame_esq)
+        cv.imwrite(os.path.join('data', 'sinc_dir', nome), frame_dir)
         count += 1
         
     tempo_atual += intervalo_extracao
