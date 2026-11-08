@@ -60,10 +60,13 @@ def calibrate_camera(images_folder):
     return mtx, dist
  
 #1. Calibração Individual -> Podem ser utilizadas as mesmas imagens da calibração com duas câmeras
-#mtx1, dist1 = calibrate_camera(images_folder = 'calibracao_esq/*') 
-#mtx2, dist2 = calibrate_camera(images_folder = 'calibracao_dir/*')
-mtx1, dist1 = calibrate_camera(images_folder = 'sinc_esq/*') 
-mtx2, dist2 = calibrate_camera(images_folder = 'sinc_dir/*')
+#folder_esq = os.path.join('data', 'calibracao_esq','*')
+#folder_dir = os.path.join('data', 'calibracao_dir','*')
+folder_esq = os.path.join('data', 'sinc_esq', '*')
+folder_dir = os.path.join('data', 'sinc_dir', '*')
+
+mtx1, dist1 = calibrate_camera(images_folder = folder_esq) 
+mtx2, dist2 = calibrate_camera(images_folder = folder_dir)
 
 def stereo_calibrate(mtx1, dist1, mtx2, dist2, folder_esq, folder_dir, debug_xadrez=False, debug_epipolar=False):
     c1_names = sorted(glob.glob(folder_esq))
@@ -190,7 +193,7 @@ def stereo_calibrate(mtx1, dist1, mtx2, dist2, folder_esq, folder_dir, debug_xad
 
     return R, T
 
-R, T = stereo_calibrate(mtx1, dist1, mtx2, dist2, 'sinc_esq/*', 'sinc_dir/*',debug_xadrez=False, debug_epipolar=False)
+R, T = stereo_calibrate(mtx1, dist1, mtx2, dist2, folder_esq, folder_dir, debug_xadrez=False, debug_epipolar=False)
 #debugs = True para debug
 
 RT1 = np.concatenate([np.eye(3), [[0],[0],[0]]], axis = -1)
@@ -200,5 +203,5 @@ RT2 = np.concatenate([R, T], axis = -1)
 P2 = mtx2 @ RT2 
 
 #Salva as matrizes de projeção
-np.savez('matrizes_projetivas.npz', P1=P1, P2=P2)
+np.savez(os.path.join('data', 'matrizes_projetivas.npz'), P1=P1, P2=P2)
 print("Matrizes salvas com sucesso em 'matrizes_projetivas.npz'")
